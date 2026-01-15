@@ -7,15 +7,12 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.SizeF;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -110,9 +107,14 @@ public abstract class Utils {
                             " calling Utils.convertDpToPixel(...). Otherwise conversion does not " +
                             "take place.");
             return dp;
+            // throw new IllegalStateException(
+            // "Utils NOT INITIALIZED. You need to call Utils.init(...) at least once before
+            // calling Utils.convertDpToPixel(...).");
         }
 
-        return dp * mMetrics.density;
+        DisplayMetrics metrics = mMetrics;
+        float px = dp * (metrics.densityDpi / 160f);
+        return px;
     }
 
     /**
@@ -131,9 +133,14 @@ public abstract class Utils {
                             " calling Utils.convertPixelsToDp(...). Otherwise conversion does not" +
                             " take place.");
             return px;
+            // throw new IllegalStateException(
+            // "Utils NOT INITIALIZED. You need to call Utils.init(...) at least once before
+            // calling Utils.convertPixelsToDp(...).");
         }
 
-        return px / mMetrics.density;
+        DisplayMetrics metrics = mMetrics;
+        float dp = px / (metrics.densityDpi / 160f);
+        return dp;
     }
 
     /**
@@ -501,10 +508,7 @@ public abstract class Utils {
      */
     @SuppressLint("NewApi")
     public static void postInvalidateOnAnimation(View view) {
-        if (Build.VERSION.SDK_INT >= 16)
-            view.postInvalidateOnAnimation();
-        else
-            view.postInvalidateDelayed(10);
+        view.postInvalidateOnAnimation();
     }
 
     public static int getMinimumFlingVelocity() {
@@ -523,31 +527,6 @@ public abstract class Utils {
             angle += 360.f;
 
         return angle % 360.f;
-    }
-
-    private static Rect mDrawableBoundsCache = new Rect();
-
-    public static void drawImage(Canvas canvas,
-                                 Drawable drawable,
-                                 int x, int y,
-                                 int width, int height) {
-
-        MPPointF drawOffset = MPPointF.getInstance();
-        drawOffset.x = x - (width / 2);
-        drawOffset.y = y - (height / 2);
-
-        drawable.copyBounds(mDrawableBoundsCache);
-        drawable.setBounds(
-                mDrawableBoundsCache.left,
-                mDrawableBoundsCache.top,
-                mDrawableBoundsCache.left + width,
-                mDrawableBoundsCache.top + width);
-
-        int saveId = canvas.save();
-        // translate to the correct position and draw
-        canvas.translate(drawOffset.x, drawOffset.y);
-        drawable.draw(canvas);
-        canvas.restoreToCount(saveId);
     }
 
     private static Rect mDrawTextRectBuffer = new Rect();

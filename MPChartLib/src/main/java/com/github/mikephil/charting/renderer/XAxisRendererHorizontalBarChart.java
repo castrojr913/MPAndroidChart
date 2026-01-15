@@ -225,11 +225,9 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 		float[] pts = mRenderLimitLinesBuffer;
         pts[0] = 0;
         pts[1] = 0;
-
 		Path limitLinePath = mRenderLimitLinesPathBuffer;
         limitLinePath.reset();
-
-		for (int i = 0; i < limitLines.size(); i++) {
+        for (int i = 0; i < limitLines.size(); i++) {
 
 			LimitLine l = limitLines.get(i);
 
@@ -241,7 +239,7 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
             mLimitLineClippingRect.inset(0.f, -l.getLineWidth());
             c.clipRect(mLimitLineClippingRect);
 
-			mLimitLinePaint.setStyle(Paint.Style.STROKE);
+            mLimitLinePaint.setStyle(Paint.Style.STROKE);
 			mLimitLinePaint.setColor(l.getLineColor());
 			mLimitLinePaint.setStrokeWidth(l.getLineWidth());
 			mLimitLinePaint.setPathEffect(l.getDashPathEffect());

@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.github.mikephil.charting.animation.Easing;
-import com.github.mikephil.charting.animation.Easing.EasingFunction;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.ChartData;
@@ -455,13 +454,11 @@ public abstract class PieRadarChartBase<T extends ChartData<? extends IDataSet<?
 
     @Override
     public float getYChartMax() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public float getYChartMin() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -478,15 +475,12 @@ public abstract class PieRadarChartBase<T extends ChartData<? extends IDataSet<?
      * @param toangle
      */
     @SuppressLint("NewApi")
-    public void spin(int durationmillis, float fromangle, float toangle, EasingFunction easing) {
-
+    public void spin(int durationmillis, float fromangle, float toangle, Easing.EasingOption easing) {
         setRotationAngle(fromangle);
-
-        ObjectAnimator spinAnimator = ObjectAnimator.ofFloat(this, "rotationAngle", fromangle,
-                toangle);
+        ObjectAnimator spinAnimator = ObjectAnimator.ofFloat(
+                this, "rotationAngle", fromangle, toangle);
         spinAnimator.setDuration(durationmillis);
-        spinAnimator.setInterpolator(easing);
-
+        spinAnimator.setInterpolator(Easing.getEasingFunctionFromOption(easing));
         spinAnimator.addUpdateListener(new AnimatorUpdateListener() {
 
             @Override

@@ -52,7 +52,9 @@ public class ColorTemplate {
             Color.rgb(140, 234, 255), Color.rgb(255, 140, 157)
     };
     public static final int[] MATERIAL_COLORS = {
-            rgb("#2ecc71"), rgb("#f1c40f"), rgb("#e74c3c"), rgb("#3498db")
+            rgb("#1f94f3"), rgb("#6739b7"), rgb("#ffde16"), rgb("#f46f46"),
+            rgb("#416ee4"), rgb("#009486"), rgb("#f7bc3b"), rgb("#2bd1e1"),
+            rgb("#f7931e"), rgb("#8dc53e")
     };
 
     /**
@@ -79,7 +81,7 @@ public class ColorTemplate {
     }
 
     /**
-     * Sets the alpha component of the given color.
+     * Sets the alpha general.di.component of the given color.
      *
      * @param color
      * @param alpha 0 - 255

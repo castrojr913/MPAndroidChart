@@ -1,13 +1,8 @@
 
 package com.github.mikephil.charting.data;
 
-import android.util.Log;
-
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A PieData object can only represent one DataSet. Unlike all other charts, the
@@ -19,7 +14,7 @@ import java.util.List;
  */
 public class PieData extends ChartData<IPieDataSet> {
 
-    public PieData() {
+    public PieData(String[] xStatusData, PieDataSet dataSet) {
         super();
     }
 
@@ -46,18 +41,6 @@ public class PieData extends ChartData<IPieDataSet> {
      */
     public IPieDataSet getDataSet() {
         return mDataSets.get(0);
-    }
-
-    @Override
-    public List<IPieDataSet> getDataSets() {
-        List<IPieDataSet> dataSets = super.getDataSets();
-
-        if (dataSets.size() < 1) {
-            Log.e("MPAndroidChart",
-                    "Found multiple data sets while pie chart only allows one");
-        }
-
-        return dataSets;
     }
 
     /**

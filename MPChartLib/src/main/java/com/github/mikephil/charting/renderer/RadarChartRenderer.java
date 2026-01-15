@@ -50,8 +50,7 @@ public class RadarChartRenderer extends LineRadarRenderer {
 
     @Override
     public void initBuffers() {
-        // TODO Auto-generated method stub
-
+        // Blank
     }
 
     @Override
@@ -160,7 +159,6 @@ public class RadarChartRenderer extends LineRadarRenderer {
 
         MPPointF center = mChart.getCenterOffsets();
         MPPointF pOut = MPPointF.getInstance(0,0);
-        MPPointF pIcon = MPPointF.getInstance(0,0);
 
         float yoffset = Utils.convertDpToPixel(5f);
 
@@ -174,10 +172,6 @@ public class RadarChartRenderer extends LineRadarRenderer {
             // apply the text-styling defined by the DataSet
             applyValueTextStyle(dataSet);
 
-            MPPointF iconsOffset = MPPointF.getInstance(dataSet.getIconsOffset());
-            iconsOffset.x = Utils.convertDpToPixel(iconsOffset.x);
-            iconsOffset.y = Utils.convertDpToPixel(iconsOffset.y);
-
             for (int j = 0; j < dataSet.getEntryCount(); j++) {
 
                 RadarEntry entry = dataSet.getEntryForIndex(j);
@@ -188,47 +182,13 @@ public class RadarChartRenderer extends LineRadarRenderer {
                          sliceangle * j * phaseX + mChart.getRotationAngle(),
                          pOut);
 
-                if (dataSet.isDrawValuesEnabled()) {
-                    drawValue(c,
-                            dataSet.getValueFormatter(),
-                            entry.getY(),
-                            entry,
-                            i,
-                            pOut.x,
-                            pOut.y - yoffset,
-                            dataSet.getValueTextColor
-                                    (j));
-                }
-
-                if (entry.getIcon() != null && dataSet.isDrawIconsEnabled()) {
-
-                    Drawable icon = entry.getIcon();
-
-                    Utils.getPosition(
-                            center,
-                            (entry.getY()) * factor * phaseY + iconsOffset.y,
-                            sliceangle * j * phaseX + mChart.getRotationAngle(),
-                            pIcon);
-
-                    //noinspection SuspiciousNameCombination
-                    pIcon.y += iconsOffset.x;
-
-                    Utils.drawImage(
-                            c,
-                            icon,
-                            (int)pIcon.x,
-                            (int)pIcon.y,
-                            icon.getIntrinsicWidth(),
-                            icon.getIntrinsicHeight());
-                }
+                drawValue(c, dataSet.getValueFormatter(), entry.getY(), entry, i, pOut.x, pOut.y - yoffset, dataSet.getValueTextColor
+                        (j));
             }
-
-            MPPointF.recycleInstance(iconsOffset);
         }
 
         MPPointF.recycleInstance(center);
         MPPointF.recycleInstance(pOut);
-        MPPointF.recycleInstance(pIcon);
     }
 
     @Override

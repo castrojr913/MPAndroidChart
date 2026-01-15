@@ -94,12 +94,6 @@ public class PieChart extends PieRadarChartBase<PieData> {
 
     protected float mMaxAngle = 360f;
 
-    /**
-     * Minimum angle to draw slices, this only works if there is enough room for all slices to have
-     * the minimum angle, default 0f.
-     */
-    private float mMinAngleForSlices = 0f;
-
     public PieChart(Context context) {
         super(context);
     }
@@ -234,12 +228,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
 
         List<IPieDataSet> dataSets = mData.getDataSets();
 
-        boolean hasMinAngle = mMinAngleForSlices != 0f && entryCount * mMinAngleForSlices <= mMaxAngle;
-        float[] minAngles = new float[entryCount];
-
         int cnt = 0;
-        float offset = 0f;
-        float diff = 0f;
 
         for (int i = 0; i < mData.getDataSetCount(); i++) {
 
@@ -247,20 +236,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
 
             for (int j = 0; j < set.getEntryCount(); j++) {
 
-                float drawAngle = calcAngle(Math.abs(set.getEntryForIndex(j).getY()), yValueSum);
-
-                if (hasMinAngle) {
-                    float temp = drawAngle - mMinAngleForSlices;
-                    if (temp <= 0) {
-                        minAngles[cnt] = mMinAngleForSlices;
-                        offset += -temp;
-                    } else {
-                        minAngles[cnt] = drawAngle;
-                        diff += temp;
-                    }
-                }
-
-                mDrawAngles[cnt] = drawAngle;
+                mDrawAngles[cnt] = calcAngle(Math.abs(set.getEntryForIndex(j).getY()), yValueSum);
 
                 if (cnt == 0) {
                     mAbsoluteAngles[cnt] = mDrawAngles[cnt];
@@ -272,20 +248,6 @@ public class PieChart extends PieRadarChartBase<PieData> {
             }
         }
 
-        if (hasMinAngle) {
-            // Correct bigger slices by relatively reducing their angles based on the total angle needed to subtract
-            // This requires that `entryCount * mMinAngleForSlices <= mMaxAngle` be true to properly work!
-            for (int i = 0; i < entryCount; i++) {
-                minAngles[i] -= (minAngles[i] - mMinAngleForSlices) / diff * offset;
-                if (i == 0) {
-                    mAbsoluteAngles[0] = minAngles[0];
-                } else {
-                    mAbsoluteAngles[i] = mAbsoluteAngles[i - 1] + minAngles[i];
-                }
-            }
-
-            mDrawAngles = minAngles;
-        }
     }
 
     /**
@@ -689,16 +651,6 @@ public class PieChart extends PieRadarChartBase<PieData> {
     }
 
     /**
-     * Sets whether to draw slices in a curved fashion, only works if drawing the hole is enabled
-     * and if the slices are not drawn under the hole.
-     *
-     * @param enabled draw curved ends of slices
-     */
-    public void setDrawRoundedSlices(boolean enabled) {
-        mDrawRoundedSlices = enabled;
-    }
-
-    /**
      * Returns true if the chart is set to draw each end of a pie-slice
      * "rounded".
      *
@@ -765,32 +717,6 @@ public class PieChart extends PieRadarChartBase<PieData> {
             maxangle = 90f;
 
         this.mMaxAngle = maxangle;
-    }
-
-    /**
-     * The minimum angle slices on the chart are rendered with, default is 0f.
-     *
-     * @return minimum angle for slices
-     */
-    public float getMinAngleForSlices() {
-        return mMinAngleForSlices;
-    }
-
-    /**
-     * Set the angle to set minimum size for slices, you must call {@link #notifyDataSetChanged()}
-     * and {@link #invalidate()} when changing this, only works if there is enough room for all
-     * slices to have the minimum angle.
-     *
-     * @param minAngle minimum 0, maximum is half of {@link #setMaxAngle(float)}
-     */
-    public void setMinAngleForSlices(float minAngle) {
-
-        if (minAngle > (mMaxAngle / 2f))
-            minAngle = mMaxAngle / 2f;
-        else if (minAngle < 0)
-            minAngle = 0f;
-
-        this.mMinAngleForSlices = minAngle;
     }
 
     @Override

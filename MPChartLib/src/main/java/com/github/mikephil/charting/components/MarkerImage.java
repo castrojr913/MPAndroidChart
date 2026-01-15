@@ -45,14 +45,7 @@ public class MarkerImage implements IMarker {
     public MarkerImage(Context context, int drawableResourceId) {
         mContext = context;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            mDrawable = mContext.getResources().getDrawable(drawableResourceId, null);
-        }
-        else
-        {
-            mDrawable = mContext.getResources().getDrawable(drawableResourceId);
-        }
+        mDrawable = mContext.getResources().getDrawable(drawableResourceId, null);
     }
 
     public void setOffset(MPPointF offset) {
@@ -142,10 +135,10 @@ public class MarkerImage implements IMarker {
         float width = mSize.width;
         float height = mSize.height;
 
-        if (width == 0.f) {
+        if (width == 0.f && mDrawable != null) {
             width = mDrawable.getIntrinsicWidth();
         }
-        if (height == 0.f) {
+        if (height == 0.f && mDrawable != null) {
             height = mDrawable.getIntrinsicHeight();
         }
 

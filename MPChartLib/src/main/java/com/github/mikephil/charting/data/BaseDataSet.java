@@ -10,7 +10,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Utils;
 
 import java.util.ArrayList;
@@ -67,16 +66,6 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * if true, y-values are drawn on the chart
      */
     protected boolean mDrawValues = true;
-
-    /**
-     * if true, y-icons are drawn on the chart
-     */
-    protected boolean mDrawIcons = true;
-
-    /**
-     * the offset for drawing icons (in dp)
-     */
-    protected MPPointF mIconsOffset = new MPPointF();
 
     /**
      * the size of the value-text labels
@@ -183,7 +172,7 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      */
     public void setColors(int[] colors, Context c) {
 
-        if (mColors == null) {
+        if(mColors == null){
             mColors = new ArrayList<>();
         }
 
@@ -243,7 +232,7 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * Resets all colors of this DataSet and recreates the colors array.
      */
     public void resetColors() {
-        if (mColors == null) {
+        if(mColors == null) {
             mColors = new ArrayList<Integer>();
         }
         mColors.clear();
@@ -382,28 +371,6 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     @Override
-    public void setDrawIcons(boolean enabled) {
-        mDrawIcons = enabled;
-    }
-
-    @Override
-    public boolean isDrawIconsEnabled() {
-        return mDrawIcons;
-    }
-
-    @Override
-    public void setIconsOffset(MPPointF offsetDp) {
-
-        mIconsOffset.x = offsetDp.x;
-        mIconsOffset.y = offsetDp.y;
-    }
-
-    @Override
-    public MPPointF getIconsOffset() {
-        return mIconsOffset;
-    }
-
-    @Override
     public void setVisible(boolean visible) {
         mVisible = visible;
     }
@@ -484,23 +451,5 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         }
 
         return false;
-    }
-
-    protected void copy(BaseDataSet baseDataSet) {
-        baseDataSet.mAxisDependency = mAxisDependency;
-        baseDataSet.mColors = mColors;
-        baseDataSet.mDrawIcons = mDrawIcons;
-        baseDataSet.mDrawValues = mDrawValues;
-        baseDataSet.mForm = mForm;
-        baseDataSet.mFormLineDashEffect = mFormLineDashEffect;
-        baseDataSet.mFormLineWidth = mFormLineWidth;
-        baseDataSet.mFormSize = mFormSize;
-        baseDataSet.mHighlightEnabled = mHighlightEnabled;
-        baseDataSet.mIconsOffset = mIconsOffset;
-        baseDataSet.mValueColors = mValueColors;
-        baseDataSet.mValueFormatter = mValueFormatter;
-        baseDataSet.mValueColors = mValueColors;
-        baseDataSet.mValueTextSize = mValueTextSize;
-        baseDataSet.mVisible = mVisible;
     }
 }

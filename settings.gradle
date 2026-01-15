@@ -1,7 +1,18 @@
-include 'MPChartLib'
-//include 'MPAndroidChart-Realm'
-include 'MPChartExample'
-//include ':MPChartLib-Realm'
-//project(':MPChartLib-Realm').projectDir = new File('../MPAndroidChart-Realm/MPChartLib-Realm')
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
 
+rootProject.name = 'MPChartLib-Project'
+include ':MPChartLib', ':MPChartExample'
 
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}

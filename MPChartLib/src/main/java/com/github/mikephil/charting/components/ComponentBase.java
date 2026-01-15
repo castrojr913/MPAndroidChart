@@ -19,12 +19,12 @@ public abstract class ComponentBase {
     protected boolean mEnabled = true;
 
     /**
-     * the offset in pixels this component has on the x-axis
+     * the offset in pixels this general.di.component has on the x-axis
      */
     protected float mXOffset = 5f;
 
     /**
-     * the offset in pixels this component has on the Y-axis
+     * the offset in pixels this general.di.component has on the Y-axis
      */
     protected float mYOffset = 5f;
 
@@ -36,7 +36,7 @@ public abstract class ComponentBase {
     /**
      * the text size of the labels
      */
-    protected float mTextSize = Utils.convertDpToPixel(10f);
+    protected float mTextSize = 10f;
 
     /**
      * the text color to use for the labels
@@ -152,8 +152,8 @@ public abstract class ComponentBase {
     }
 
     /**
-     * Set this to true if this component should be enabled (should be drawn),
-     * false if not. If disabled, nothing of this component will be drawn.
+     * Set this to true if this general.di.component should be enabled (should be drawn),
+     * false if not. If disabled, nothing of this general.di.component will be drawn.
      * Default: true
      *
      * @param enabled

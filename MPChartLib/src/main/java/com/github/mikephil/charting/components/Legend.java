@@ -1,3 +1,4 @@
+
 package com.github.mikephil.charting.components;
 
 import android.graphics.DashPathEffect;
@@ -19,6 +20,19 @@ import java.util.List;
  * @author Philipp Jahoda
  */
 public class Legend extends ComponentBase {
+
+    /**
+     * This property is deprecated - Use `horizontalAlignment`, `verticalAlignment`, `orientation`, `drawInside`,
+     * `direction`.
+     */
+    @Deprecated
+    public enum LegendPosition {
+        RIGHT_OF_CHART, RIGHT_OF_CHART_CENTER, RIGHT_OF_CHART_INSIDE,
+        LEFT_OF_CHART, LEFT_OF_CHART_CENTER, LEFT_OF_CHART_INSIDE,
+        BELOW_CHART_LEFT, BELOW_CHART_RIGHT, BELOW_CHART_CENTER,
+        ABOVE_CHART_LEFT, ABOVE_CHART_RIGHT, ABOVE_CHART_CENTER,
+        PIECHART_CENTER
+    }
 
     public enum LegendForm {
         /**
@@ -167,6 +181,43 @@ public class Legend extends ComponentBase {
         this.mEntries = entries;
     }
 
+    @Deprecated
+    public Legend(int[] colors, String[] labels) {
+        this();
+
+        if (colors == null || labels == null) {
+            throw new IllegalArgumentException("colors array or labels array is NULL");
+        }
+
+        if (colors.length != labels.length) {
+            throw new IllegalArgumentException(
+                    "colors array and labels array need to be of same size");
+        }
+
+        List<LegendEntry> entries = new ArrayList<>();
+
+        for (int i = 0; i < Math.min(colors.length, labels.length); i++) {
+            final LegendEntry entry = new LegendEntry();
+            entry.formColor = colors[i];
+            entry.label = labels[i];
+
+            if (entry.formColor == ColorTemplate.COLOR_SKIP)
+                entry.form = LegendForm.NONE;
+            else if (entry.formColor == ColorTemplate.COLOR_NONE ||
+                    entry.formColor == 0)
+                entry.form = LegendForm.EMPTY;
+
+            entries.add(entry);
+        }
+
+        mEntries = entries.toArray(new LegendEntry[entries.size()]);
+    }
+
+    @Deprecated
+    public Legend(List<Integer> colors, List<String> labels) {
+        this(Utils.convertIntegers(colors), Utils.convertStrings(labels));
+    }
+
     /**
      * This method sets the automatically computed colors for the legend. Use setCustom(...) to set custom colors.
      *
@@ -210,6 +261,7 @@ public class Legend extends ComponentBase {
         }
 
         return max + maxFormSize + formToTextSpace;
+
     }
 
     /**
@@ -235,6 +287,50 @@ public class Legend extends ComponentBase {
         return max;
     }
 
+    @Deprecated
+    public int[] getColors() {
+
+        int[] old = new int[mEntries.length];
+        for (int i = 0; i < mEntries.length; i++) {
+            old[i] = mEntries[i].form == LegendForm.NONE ? ColorTemplate.COLOR_SKIP :
+                    (mEntries[i].form == LegendForm.EMPTY ? ColorTemplate.COLOR_NONE :
+                            mEntries[i].formColor);
+        }
+        return old;
+    }
+
+    @Deprecated
+    public String[] getLabels() {
+
+        String[] old = new String[mEntries.length];
+        for (int i = 0; i < mEntries.length; i++) {
+            old[i] = mEntries[i].label;
+        }
+        return old;
+    }
+
+    @Deprecated
+    public int[] getExtraColors() {
+
+        int[] old = new int[mExtraEntries.length];
+        for (int i = 0; i < mExtraEntries.length; i++) {
+            old[i] = mExtraEntries[i].form == LegendForm.NONE ? ColorTemplate.COLOR_SKIP :
+                    (mExtraEntries[i].form == LegendForm.EMPTY ? ColorTemplate.COLOR_NONE :
+                            mExtraEntries[i].formColor);
+        }
+        return old;
+    }
+
+    @Deprecated
+    public String[] getExtraLabels() {
+
+        String[] old = new String[mExtraEntries.length];
+        for (int i = 0; i < mExtraEntries.length; i++) {
+            old[i] = mExtraEntries[i].label;
+        }
+        return old;
+    }
+
     public LegendEntry[] getExtraEntries() {
 
         return mExtraEntries;
@@ -248,6 +344,11 @@ public class Legend extends ComponentBase {
         if (entries == null)
             entries = new LegendEntry[]{};
         mExtraEntries = entries;
+    }
+
+    @Deprecated
+    public void setExtra(List<Integer> colors, List<String> labels) {
+        setExtra(Utils.convertIntegers(colors), Utils.convertStrings(labels));
     }
 
     /**
@@ -320,6 +421,109 @@ public class Legend extends ComponentBase {
      */
     public boolean isLegendCustom() {
         return mIsLegendCustom;
+    }
+
+    /**
+     * This property is deprecated - Use `horizontalAlignment`, `verticalAlignment`, `orientation`, `drawInside`,
+     * `direction`.
+     */
+    @Deprecated
+    public LegendPosition getPosition() {
+
+        if (mOrientation == LegendOrientation.VERTICAL
+                && mHorizontalAlignment == LegendHorizontalAlignment.CENTER
+                && mVerticalAlignment == LegendVerticalAlignment.CENTER) {
+            return LegendPosition.PIECHART_CENTER;
+        } else if (mOrientation == LegendOrientation.HORIZONTAL) {
+            if (mVerticalAlignment == LegendVerticalAlignment.TOP)
+                return mHorizontalAlignment == LegendHorizontalAlignment.LEFT
+                        ? LegendPosition.ABOVE_CHART_LEFT
+                        : (mHorizontalAlignment == LegendHorizontalAlignment.RIGHT
+                        ? LegendPosition.ABOVE_CHART_RIGHT
+                        : LegendPosition.ABOVE_CHART_CENTER);
+            else
+                return mHorizontalAlignment == LegendHorizontalAlignment.LEFT
+                        ? LegendPosition.BELOW_CHART_LEFT
+                        : (mHorizontalAlignment == LegendHorizontalAlignment.RIGHT
+                        ? LegendPosition.BELOW_CHART_RIGHT
+                        : LegendPosition.BELOW_CHART_CENTER);
+        } else {
+            if (mHorizontalAlignment == LegendHorizontalAlignment.LEFT)
+                return mVerticalAlignment == LegendVerticalAlignment.TOP && mDrawInside
+                        ? LegendPosition.LEFT_OF_CHART_INSIDE
+                        : (mVerticalAlignment == LegendVerticalAlignment.CENTER
+                        ? LegendPosition.LEFT_OF_CHART_CENTER
+                        : LegendPosition.LEFT_OF_CHART);
+            else
+                return mVerticalAlignment == LegendVerticalAlignment.TOP && mDrawInside
+                        ? LegendPosition.RIGHT_OF_CHART_INSIDE
+                        : (mVerticalAlignment == LegendVerticalAlignment.CENTER
+                        ? LegendPosition.RIGHT_OF_CHART_CENTER
+                        : LegendPosition.RIGHT_OF_CHART);
+        }
+    }
+
+    /**
+     * This property is deprecated - Use `horizontalAlignment`, `verticalAlignment`, `orientation`, `drawInside`,
+     * `direction`.
+     */
+    @Deprecated
+    public void setPosition(LegendPosition newValue) {
+
+        switch (newValue) {
+            case LEFT_OF_CHART:
+            case LEFT_OF_CHART_INSIDE:
+            case LEFT_OF_CHART_CENTER:
+                mHorizontalAlignment = LegendHorizontalAlignment.LEFT;
+                mVerticalAlignment = newValue == LegendPosition.LEFT_OF_CHART_CENTER
+                        ? LegendVerticalAlignment.CENTER
+                        : LegendVerticalAlignment.TOP;
+                mOrientation = LegendOrientation.VERTICAL;
+                break;
+
+            case RIGHT_OF_CHART:
+            case RIGHT_OF_CHART_INSIDE:
+            case RIGHT_OF_CHART_CENTER:
+                mHorizontalAlignment = LegendHorizontalAlignment.RIGHT;
+                mVerticalAlignment = newValue == LegendPosition.RIGHT_OF_CHART_CENTER
+                        ? LegendVerticalAlignment.CENTER
+                        : LegendVerticalAlignment.TOP;
+                mOrientation = LegendOrientation.VERTICAL;
+                break;
+
+            case ABOVE_CHART_LEFT:
+            case ABOVE_CHART_CENTER:
+            case ABOVE_CHART_RIGHT:
+                mHorizontalAlignment = newValue == LegendPosition.ABOVE_CHART_LEFT
+                        ? LegendHorizontalAlignment.LEFT
+                        : (newValue == LegendPosition.ABOVE_CHART_RIGHT
+                        ? LegendHorizontalAlignment.RIGHT
+                        : LegendHorizontalAlignment.CENTER);
+                mVerticalAlignment = LegendVerticalAlignment.TOP;
+                mOrientation = LegendOrientation.HORIZONTAL;
+                break;
+
+            case BELOW_CHART_LEFT:
+            case BELOW_CHART_CENTER:
+            case BELOW_CHART_RIGHT:
+                mHorizontalAlignment = newValue == LegendPosition.BELOW_CHART_LEFT
+                        ? LegendHorizontalAlignment.LEFT
+                        : (newValue == LegendPosition.BELOW_CHART_RIGHT
+                        ? LegendHorizontalAlignment.RIGHT
+                        : LegendHorizontalAlignment.CENTER);
+                mVerticalAlignment = LegendVerticalAlignment.BOTTOM;
+                mOrientation = LegendOrientation.HORIZONTAL;
+                break;
+
+            case PIECHART_CENTER:
+                mHorizontalAlignment = LegendHorizontalAlignment.CENTER;
+                mVerticalAlignment = LegendVerticalAlignment.CENTER;
+                mOrientation = LegendOrientation.VERTICAL;
+                break;
+        }
+
+        mDrawInside = newValue == LegendPosition.LEFT_OF_CHART_INSIDE
+                || newValue == LegendPosition.RIGHT_OF_CHART_INSIDE;
     }
 
     /**
@@ -703,7 +907,8 @@ public class Legend extends ComponentBase {
 
                         width += Utils.calcTextWidth(labelpaint, label);
 
-                        maxHeight += labelLineHeight + yEntrySpace;
+                        if (i < entryCount - 1)
+                            maxHeight += labelLineHeight + yEntrySpace;
                     } else {
                         wasStacked = true;
                         width += formSize;
@@ -739,33 +944,31 @@ public class Legend extends ComponentBase {
 
                     LegendEntry e = entries[i];
                     boolean drawingForm = e.form != LegendForm.NONE;
-                    float formSize = Float.isNaN(e.formSize)
-                            ? defaultFormSize
-                            : Utils.convertDpToPixel(e.formSize);
+                    float formSize = Float.isNaN(e.formSize)? defaultFormSize:Utils.convertDpToPixel(e.formSize);
                     String label = e.label;
 
                     mCalculatedLabelBreakPoints.add(false);
 
                     if (stackedStartIndex == -1) {
-                        // we are not stacking, so required width is for this label
-                        // only
+                        // we are not stacking, so required width is for this label only
                         requiredWidth = 0.f;
-                    } else {
+                    }
+                    else {
                         // add the spacing appropriate for stacked labels/forms
                         requiredWidth += stackSpace;
                     }
 
                     // grouped forms have null labels
                     if (label != null) {
-
                         mCalculatedLabelSizes.add(Utils.calcTextSize(labelpaint, label));
                         requiredWidth += drawingForm ? formToTextSpace + formSize : 0.f;
                         requiredWidth += mCalculatedLabelSizes.get(i).width;
-                    } else {
+
+                    }
+                    else {
 
                         mCalculatedLabelSizes.add(FSize.getInstance(0.f, 0.f));
                         requiredWidth += drawingForm ? formSize : 0.f;
-
                         if (stackedStartIndex == -1) {
                             // mark this index as we might want to break here later
                             stackedStartIndex = i;
@@ -774,27 +977,28 @@ public class Legend extends ComponentBase {
 
                     if (label != null || i == entryCount - 1) {
 
-                        float requiredSpacing = currentLineWidth == 0.f ? 0.f : xEntrySpace;
+                        //float requiredSpacing = currentLineWidth == 0.f ? 0.f : xEntrySpace;
+                        float requiredSpacing = 0.f;
 
-                        if (!wordWrapEnabled // No word wrapping, it must fit.
-                                // The line is empty, it must fit
-                                || currentLineWidth == 0.f
-                                // It simply fits
-                                || (contentWidth - currentLineWidth >=
+                        // setWordWrapEnabled == false
+                        if (!wordWrapEnabled || currentLineWidth == 0.f || (contentWidth - currentLineWidth >=
                                 requiredSpacing + requiredWidth)) {
                             // Expand current line
                             currentLineWidth += requiredSpacing + requiredWidth;
-                        } else { // It doesn't fit, we need to wrap a line
-
+                        }
+                        // setWordWrapEnabled == true
+                        else {
+                            // It doesn't fit, we need to wrap a line
                             // Add current line size to array
                             mCalculatedLineSizes.add(FSize.getInstance(currentLineWidth, labelLineHeight));
                             maxLineWidth = Math.max(maxLineWidth, currentLineWidth);
 
+
                             // Start a new line
-                            mCalculatedLabelBreakPoints.set(
-                                    stackedStartIndex > -1 ? stackedStartIndex
-                                            : i, true);
+                            mCalculatedLabelBreakPoints.set(stackedStartIndex > -1 ? stackedStartIndex: i, true);
                             currentLineWidth = requiredWidth;
+
+
                         }
 
                         if (i == entryCount - 1) {
@@ -818,7 +1022,6 @@ public class Legend extends ComponentBase {
                 break;
             }
         }
-
         mNeededHeight += mYOffset;
         mNeededWidth += mXOffset;
     }

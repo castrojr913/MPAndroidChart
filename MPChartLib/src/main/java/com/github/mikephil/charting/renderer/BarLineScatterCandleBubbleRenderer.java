@@ -29,7 +29,7 @@ public abstract class BarLineScatterCandleBubbleRenderer extends DataRenderer {
      * @return
      */
     protected boolean shouldDrawValues(IDataSet set) {
-        return set.isVisible() && (set.isDrawValuesEnabled() || set.isDrawIconsEnabled());
+        return set.isVisible() && set.isDrawValuesEnabled();
     }
 
     /**

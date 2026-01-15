@@ -4,7 +4,6 @@ package com.github.mikephil.charting.renderer;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint.Style;
-import android.graphics.drawable.Drawable;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.data.BubbleData;
@@ -12,7 +11,6 @@ import com.github.mikephil.charting.data.BubbleEntry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.dataprovider.BubbleDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IBubbleDataSet;
-import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -67,9 +65,6 @@ public class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
     protected void drawDataSet(Canvas c, IBubbleDataSet dataSet) {
 
-        if (dataSet.getEntryCount() < 1)
-            return;
-
         Transformer trans = mChart.getTransformer(dataSet.getAxisDependency());
 
         float phaseY = mAnimator.getPhaseY();
@@ -108,7 +103,7 @@ public class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
             if (!mViewPortHandler.isInBoundsRight(pointBuffer[0] - shapeHalf))
                 break;
 
-            final int color = dataSet.getColor(j);
+            final int color = dataSet.getColor((int) entry.getX());
 
             mRenderPaint.setColor(color);
             c.drawCircle(pointBuffer[0], pointBuffer[1], shapeHalf, mRenderPaint);
@@ -134,7 +129,7 @@ public class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
                 IBubbleDataSet dataSet = dataSets.get(i);
 
-                if (!shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1)
+                if (!shouldDrawValues(dataSet))
                     continue;
 
                 // apply the text-styling defined by the DataSet
@@ -149,10 +144,6 @@ public class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
                         .generateTransformedValuesBubble(dataSet, phaseY, mXBounds.min, mXBounds.max);
 
                 final float alpha = phaseX == 1 ? phaseY : phaseX;
-
-                MPPointF iconsOffset = MPPointF.getInstance(dataSet.getIconsOffset());
-                iconsOffset.x = Utils.convertDpToPixel(iconsOffset.x);
-                iconsOffset.y = Utils.convertDpToPixel(iconsOffset.y);
 
                 for (int j = 0; j < positions.length; j += 2) {
 
@@ -171,26 +162,9 @@ public class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
                     BubbleEntry entry = dataSet.getEntryForIndex(j / 2 + mXBounds.min);
 
-                    if (dataSet.isDrawValuesEnabled()) {
-                        drawValue(c, dataSet.getValueFormatter(), entry.getSize(), entry, i, x,
-                                y + (0.5f * lineHeight), valueTextColor);
-                    }
-
-                    if (entry.getIcon() != null && dataSet.isDrawIconsEnabled()) {
-
-                        Drawable icon = entry.getIcon();
-
-                        Utils.drawImage(
-                                c,
-                                icon,
-                                (int)(x + iconsOffset.x),
-                                (int)(y + iconsOffset.y),
-                                icon.getIntrinsicWidth(),
-                                icon.getIntrinsicHeight());
-                    }
+                    drawValue(c, dataSet.getValueFormatter(), entry.getSize(), entry, i, x,
+                            y + (0.5f * lineHeight), valueTextColor);
                 }
-
-                MPPointF.recycleInstance(iconsOffset);
             }
         }
     }
